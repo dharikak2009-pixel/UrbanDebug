@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>UrbanDebug: Report it. Track it. Fix your city.</title>
+<meta name="description" content="UrbanDebug helps citizens report civic problems, uses AI to triage them, and helps city teams track and fix them.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <div class="brandrow">
+      <a class="brand" href="./" aria-label="UrbanDebug home">
+        <svg viewBox="0 0 32 32" width="36" height="36" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#17a35f"/><path d="M7 25V15h5v10zm7 0V8h6v17zm8 0v-7h4v7z" fill="#fff"/><circle cx="23" cy="12" r="3" fill="#fff"/><path d="M5 25.5h22" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <span>Urban<em>Debug</em></span>
+      </a>
+      <nav aria-label="Main">
+        <button type="button" data-v="report" class="on">Report issue</button>
+        <button type="button" data-v="track">Track issues</button>
+        <button type="button" data-v="admin">Admin</button>
+        <button type="button" data-v="about">About</button>
+      </nav>
+    </div>
+    <div class="intro">
+      <h1>Report it. Track it. Fix your city.</h1>
+      <p>Welcome to UrbanDebug. Report a civic problem, let AI triage it, and follow it until it is resolved.</p>
+    </div>
+  </div>
+</header>
+
+<section class="wrap cards" aria-label="Report statistics">
+  <div class="sc t-total"><span class="lbl">Total reports</span><b id="s-total">0</b><span class="sub">Stored on this device</span></div>
+  <div class="sc t-pend"><span class="lbl">Pending review</span><b id="s-pend">0</b><span class="sub" id="s-pend-sub"></span></div>
+  <div class="sc t-prog"><span class="lbl">In progress</span><b id="s-prog">0</b><span class="sub" id="s-prog-sub"></span></div>
+  <div class="sc t-res"><span class="lbl">Resolved</span><b id="s-res">0</b><span class="sub" id="s-res-sub"></span></div>
+</section>
+
+<main class="wrap">
+  <section id="report" class="view split">
+    <form id="form" class="panel" novalidate>
+      <div><h2>Report an issue</h2><p class="muted">Tell us what is wrong. Select a verified city and street location.</p></div>
+      <h3 class="sec">Issue details</h3>
+      <label>Title<input id="title" maxlength="80" placeholder="Deep pothole outside the school gate" aria-describedby="e-title"><small class="ferr" id="e-title" role="alert"></small></label>
+      <label>Description<textarea id="desc" rows="4" placeholder="What is wrong, for how long, and who is affected?" aria-describedby="e-desc"></textarea><small class="ferr" id="e-desc" role="alert"></small></label>
+      <label>Category<select id="cat" aria-describedby="e-cat"></select><small class="ferr" id="e-cat" role="alert"></small></label>
+      <h3 class="sec">Verified Location</h3>
+      <div class="two" style="position:relative;">
+        <label style="position:relative;">City *
+          <input id="city" placeholder="Type city (e.g. New York, London)..." autocomplete="off" aria-describedby="e-city">
+          <div id="city-sug" class="sug-list" hidden></div>
+          <small class="ferr" id="e-city" role="alert"></small>
+        </label>
+        <label style="position:relative;">Area / Street *
+          <input id="area" placeholder="Type street or neighborhood..." autocomplete="off" aria-describedby="e-area">
+          <div id="area-sug" class="sug-list" hidden></div>
+          <small class="ferr" id="e-area" role="alert"></small>
+        </label>
+      </div>
+      <label>Landmark / Additional directions (optional)<input id="landmark" placeholder="e.g. Near the central bus station / 3rd floor gate" autocomplete="off"></label>
+      <button type="button" class="ghost gps" id="gps">Add approximate GPS (optional)</button>
+      <h3 class="sec">Evidence</h3>
+      <label>Photo (optional)<input id="img" type="file" accept="image/*"></label>
+      <img id="prev" class="prev" alt="Preview of the selected photo" hidden>
+      <button class="primary" id="go">Submit report</button>
+    </form>
+
+    <aside id="triage" class="panel triage" aria-live="polite">
+      <h2>AI triage</h2>
+      <p class="muted">Every report is analysed to suggest a category, a priority and a department.</p>
+      <ol class="steps">
+        <li><b>Category</b> Suggests what kind of issue it is.</li>
+        <li><b>Priority</b> Low, Medium or High, with a short reason.</li>
+        <li><b>Department</b> Recommends who should fix it.</li>
+      </ol>
+    </aside>
+  </section>
+
+  <section id="track" class="view" hidden>
+    <div class="panel lookup">
+      <h2>Track your report</h2>
+      <p class="muted">Enter the report ID you received after submitting, for example UD-261121-K7Q2.</p>
+      <form id="lookup" class="lookrow">
+        <input id="rid" placeholder="UD-000000-XXXX" autocomplete="off" aria-label="Report ID">
+        <button class="primary">Track report</button>
+      </form>
+      <div id="lres" aria-live="polite"></div>
+    </div>
+    <div class="head"><h2>Reports on this device</h2>
+      <select id="fstatus" aria-label="Filter by status"></select></div>
+    <div id="tlist" class="grid"></div>
+  </section>
+
+  <section id="admin" class="view" hidden></section>
+
+  <section id="about" class="view" hidden>
+    <div class="panel about">
+      <h2>About UrbanDebug</h2>
+      <p>UrbanDebug is a civic technology prototype. Think of a city as software: problems like potholes, broken streetlights and overflowing bins are bugs, and UrbanDebug helps find, prioritise and fix them.</p>
+      <div class="three">
+        <div><b>1. Report it</b><p>Citizens describe a problem with a verified city and street location.</p></div>
+        <div><b>2. Track it</b><p>Every report gets a unique ID and moves through Submitted, Under Review, In Progress and Resolved.</p></div>
+        <div><b>3. Fix your city</b><p>Administrators see the latest reports, check the AI priority and update the status.</p></div>
+      </div>
+      <p class="muted">Prototype note: reports are saved in this browser only. A shared database would be the next step.</p>
+    </div>
+  </section>
+</main>
+<footer class="wrap foot"><b>UrbanDebug</b>. Report it. Track it. Fix your city. Prototype: reports are stored in this browser. AI triage by Google Gemini when connected.</footer>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script src="app.js"></script>
+</body>
+</html>
